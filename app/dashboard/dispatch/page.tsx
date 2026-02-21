@@ -1,42 +1,32 @@
-"use client";
-
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Filter } from "lucide-react"
+import { getTrips, getVehicles, getDrivers } from "@/lib/actions"
+import NewTripForm from "@/components/dispatch/NewTripForm"
+import { VehicleStatus, DriverStatus } from "@prisma/client"
 
-export default function DispatchPage() {
-    const [cargoWeight, setCargoWeight] = useState("")
+export default async function DispatchPage() {
+    const [trips, allVehicles, allDrivers] = await Promise.all([
+        getTrips(),
+        getVehicles(),
+        getDrivers(),
+    ]);
 
-    // Mock data
-    const trips = [
-        { id: 1, type: "Trailer Truck", origin: "Mumbai", destination: "Pune", status: "On way" },
-        { id: 2, type: "Mini Van", origin: "Delhi", destination: "Jaipur", status: "Completed" },
-        { id: 3, type: "Truck", origin: "Bangalore", destination: "Chennai", status: "Draft" },
-    ]
+    const availableVehicles = allVehicles.filter(v => v.status === VehicleStatus.AVAILABLE);
+    const availableDrivers = allDrivers.filter(d => d.status === DriverStatus.ON_DUTY);
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "On way": return "bg-blue-500/10 text-blue-500 border-blue-500/50"
-            case "Completed": return "bg-green-500/10 text-green-500 border-green-500/50"
-            case "Draft": return "bg-gray-500/10 text-gray-500 border-gray-500/50"
+            case "DISPATCHED": return "bg-blue-500/10 text-blue-500 border-blue-500/50"
+            case "COMPLETED": return "bg-green-500/10 text-green-500 border-green-500/50"
+            case "DRAFT": return "bg-gray-500/10 text-gray-500 border-gray-500/50"
+            case "CANCELLED": return "bg-red-500/10 text-red-500 border-red-500/50"
             default: return "bg-gray-500/10 text-gray-500 border-gray-500/50"
         }
-    }
-
-    // Handle Dispatch Logic Mock
-    const handleDispatch = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (Number(cargoWeight) > 5000) { // e.g. Max capacity of selected vehicle is 5000
-            alert("Error: Cargo weight exceeds vehicle's maximum capacity!")
-            return
-        }
-        alert("Trip Dispatched Successfully!")
     }
 
     return (
@@ -54,7 +44,7 @@ export default function DispatchPage() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="draft">Draft</SelectItem>
-                                <SelectItem value="on-way">On way</SelectItem>
+                                <SelectItem value="dispatched">Dispatched</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
                             </SelectContent>
                         </Select>
@@ -66,33 +56,41 @@ export default function DispatchPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Trip Dispatcher</CardTitle>
+                        <CardTitle>Trip History / List</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="w-[80px]">Trip</TableHead>
-                                    <TableHead>Fleet Type</TableHead>
+                                    <TableHead>Fleet Plate</TableHead>
                                     <TableHead>Origin</TableHead>
                                     <TableHead>Destination</TableHead>
                                     <TableHead className="text-right">Status</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {trips.map((t) => (
-                                    <TableRow key={t.id}>
-                                        <TableCell className="font-medium text-primary">{t.id}</TableCell>
-                                        <TableCell>{t.type}</TableCell>
-                                        <TableCell>{t.origin}</TableCell>
-                                        <TableCell>{t.destination}</TableCell>
-                                        <TableCell className="text-right">
-                                            <Badge variant="outline" className={getStatusColor(t.status)}>
-                                                {t.status}
-                                            </Badge>
+                                {trips.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
+                                            No trips found.
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                ) : (
+                                    trips.map((t) => (
+                                        <TableRow key={t.id}>
+                                            <TableCell className="font-medium text-primary font-mono">{t.id.slice(0, 8)}</TableCell>
+                                            <TableCell>{t.vehicle.licensePlate}</TableCell>
+                                            <TableCell>{t.origin}</TableCell>
+                                            <TableCell>{t.destination}</TableCell>
+                                            <TableCell className="text-right">
+                                                <Badge variant="outline" className={getStatusColor(t.status)}>
+                                                    {t.status}
+                                                </Badge>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
                     </CardContent>
@@ -100,75 +98,10 @@ export default function DispatchPage() {
             </div>
 
             <div className="xl:w-[400px]">
-                <Card className="sticky top-6">
-                    <form onSubmit={handleDispatch}>
-                        <CardHeader className="pb-4">
-                            <CardTitle className="text-lg text-primary">New Trip Form</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="vehicle">Select Vehicle</Label>
-                                <Select required>
-                                    <SelectTrigger id="vehicle">
-                                        <SelectValue placeholder="Select available vehicle..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="v1">MH 00 2017 (Mini - 5t)</SelectItem>
-                                        <SelectItem value="v2">MH 05 9922 (Van - 1t)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="weight">Cargo Weight (Kg)</Label>
-                                <Input
-                                    id="weight"
-                                    type="number"
-                                    value={cargoWeight}
-                                    onChange={(e) => setCargoWeight(e.target.value)}
-                                    placeholder="e.g. 4500"
-                                    required
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="driver">Select Driver</Label>
-                                <Select required>
-                                    <SelectTrigger id="driver">
-                                        <SelectValue placeholder="Select available driver..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="d1">John Doe (Valid Lic)</SelectItem>
-                                        <SelectItem value="d2">Alice Smith (Valid Lic)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="origin">Origin Address</Label>
-                                <Input id="origin" placeholder="Pickup location" required />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="destination">Destination</Label>
-                                <Input id="destination" placeholder="Dropoff location" required />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="fuel">Estimated Fuel Cost</Label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
-                                    <Input id="fuel" type="number" className="pl-8" placeholder="0.00" required />
-                                </div>
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Button type="submit" className="w-full bg-primary font-bold">
-                                Confirm & Dispatch Trip
-                            </Button>
-                        </CardFooter>
-                    </form>
-                </Card>
+                <NewTripForm
+                    availableVehicles={availableVehicles}
+                    availableDrivers={availableDrivers}
+                />
             </div>
         </div>
     )

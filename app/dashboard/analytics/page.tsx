@@ -1,42 +1,13 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Download } from "lucide-react"
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { getAnalyticsData } from "@/lib/actions"
+// We'll use a Client Component for the charts to handle Recharts
+import AnalyticsCharts from "@/components/analytics/AnalyticsCharts"
 
-export default function AnalyticsPage() {
-    // Mock Data
-    const kpis = {
-        totalFuelCost: "Rs. 2.6 L",
-        fleetROI: "+ 12.5%",
-        utilizationRate: "82%",
-    }
-
-    const fuelEfficiencyData = [
-        { month: "Jan", kml: 12 },
-        { month: "Feb", kml: 11 },
-        { month: "Mar", kml: 14 },
-        { month: "Apr", kml: 13 },
-        { month: "May", kml: 15 },
-        { month: "Jun", kml: 16 },
-    ]
-
-    const topCostliestVehicles = [
-        { vehicle: "VAN-02", cost: 120 },
-        { vehicle: "TRK-01", cost: 95 },
-        { vehicle: "TRK-05", cost: 85 },
-        { vehicle: "VAN-01", cost: 60 },
-        { vehicle: "MIN-04", cost: 45 },
-    ]
-
-    const financialSummary = [
-        { month: "Jan", revenue: "Rs. 17L", fuel: "Rs. 6L", maintenance: "Rs. 2L", profit: "Rs. 9L" },
-        { month: "Feb", revenue: "Rs. 18L", fuel: "Rs. 6.5L", maintenance: "Rs. 1.5L", profit: "Rs. 10L" },
-        { month: "Mar", revenue: "Rs. 16L", fuel: "Rs. 5.5L", maintenance: "Rs. 3L", profit: "Rs. 7.5L" },
-        { month: "Apr", revenue: "Rs. 20L", fuel: "Rs. 7L", maintenance: "Rs. 2L", profit: "Rs. 11L" },
-    ]
+export default async function AnalyticsPage() {
+    const data = await getAnalyticsData();
 
     return (
         <div className="flex flex-col gap-6">
@@ -54,7 +25,7 @@ export default function AnalyticsPage() {
                         <CardTitle className="text-sm font-medium text-green-700 dark:text-green-400">Total Fuel Cost</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-green-600 dark:text-green-500">{kpis.totalFuelCost}</div>
+                        <div className="text-3xl font-bold text-green-600 dark:text-green-500">{data.totalFuelCost}</div>
                     </CardContent>
                 </Card>
                 <Card className="border-blue-500/20 bg-blue-500/5">
@@ -62,7 +33,7 @@ export default function AnalyticsPage() {
                         <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400">Fleet ROI</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-blue-600 dark:text-blue-500">{kpis.fleetROI}</div>
+                        <div className="text-3xl font-bold text-blue-600 dark:text-blue-500">{data.fleetROI}</div>
                         <p className="text-xs text-muted-foreground mt-1">Compared to last quarter</p>
                     </CardContent>
                 </Card>
@@ -71,66 +42,16 @@ export default function AnalyticsPage() {
                         <CardTitle className="text-sm font-medium text-primary">Utilization Rate</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-primary">{kpis.utilizationRate}</div>
+                        <div className="text-3xl font-bold text-primary">82%</div> {/* Mocked for now but in cards */}
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Charts */}
-            <div className="grid gap-6 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Fuel Efficiency Trend (km/L)</CardTitle>
-                        <CardDescription>Average fleet distance per liter over time</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={fuelEfficiencyData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888" opacity={0.2} />
-                                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                                <YAxis tickLine={false} axisLine={false} />
-                                <Tooltip
-                                    contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="kml"
-                                    stroke="#3b82f6"
-                                    strokeWidth={3}
-                                    dot={{ r: 4, fill: "#3b82f6", strokeWidth: 2, stroke: "var(--background)" }}
-                                    activeDot={{ r: 6 }}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Top 5 Costliest Vehicles</CardTitle>
-                        <CardDescription>Total expenses (Fuel + Maint) in Thousands (Rs)</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={topCostliestVehicles} layout="vertical" margin={{ left: 20 }}>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#888" opacity={0.2} />
-                                <XAxis type="number" tickLine={false} axisLine={false} />
-                                <YAxis dataKey="vehicle" type="category" tickLine={false} axisLine={false} width={80} />
-                                <Tooltip
-                                    cursor={{ fill: "transparent" }}
-                                    contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
-                                />
-                                <Bar
-                                    dataKey="cost"
-                                    fill="#f43f5e"
-                                    radius={[0, 4, 4, 0]}
-                                    barSize={20}
-                                />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            </div>
+            {/* Charts Section (Client Component) */}
+            <AnalyticsCharts
+                fuelEfficiencyTrend={data.fuelEfficiencyTrend}
+                topCostliestVehicles={data.topCostliestVehicles}
+            />
 
             {/* Financial Summary Table */}
             <Card>
@@ -149,15 +70,23 @@ export default function AnalyticsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {financialSummary.map((row, i) => (
-                                <TableRow key={i}>
-                                    <TableCell className="font-medium text-primary">{row.month}</TableCell>
-                                    <TableCell>{row.revenue}</TableCell>
-                                    <TableCell>{row.fuel}</TableCell>
-                                    <TableCell>{row.maintenance}</TableCell>
-                                    <TableCell className="text-right font-bold text-green-500">{row.profit}</TableCell>
+                            {data.financialSummary.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
+                                        No financial data found for current period.
+                                    </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                data.financialSummary.map((row: any, i: number) => (
+                                    <TableRow key={i}>
+                                        <TableCell className="font-medium text-primary">{row.month}</TableCell>
+                                        <TableCell>{row.revenue}</TableCell>
+                                        <TableCell>{row.fuel}</TableCell>
+                                        <TableCell>{row.maintenance}</TableCell>
+                                        <TableCell className="text-right font-bold text-green-500">{row.profit}</TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>

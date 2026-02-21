@@ -5,22 +5,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Search, Filter, Plus } from "lucide-react"
+import { Search, Filter } from "lucide-react"
+import { getDashboardStats } from "@/lib/actions"
 
-export default function DashboardPage() {
-    // Mock data for the dashboard based on the screenshot
-    const kpis = {
-        activeFleet: 220,
-        maintenanceAlerts: 180,
-        pendingCargo: 20,
-        utilizationRate: 85,
-    }
-
-    const activeTrips = [
-        { id: 1, vehicle: "MH 00 2017", driver: "John Doe", status: "On Trip" },
-        { id: 2, vehicle: "MH 01 4455", driver: "Alice Smith", status: "On Trip" },
-        { id: 3, vehicle: "MH 02 9988", driver: "Bob Ross", status: "On Trip" },
-    ]
+export default async function DashboardPage() {
+    const stats = await getDashboardStats();
 
     return (
         <div className="flex flex-col gap-6">
@@ -61,7 +50,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Active Fleet</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-green-500">{kpis.activeFleet}</div>
+                        <div className="text-3xl font-bold text-green-500">{stats.activeFleet}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -69,7 +58,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Maintenance Alert</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-amber-500">{kpis.maintenanceAlerts}</div>
+                        <div className="text-3xl font-bold text-amber-500">{stats.maintenanceAlerts}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -77,7 +66,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Pending Cargo</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-primary">{kpis.pendingCargo}</div>
+                        <div className="text-3xl font-bold text-primary">{stats.pendingCargo}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -85,7 +74,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Utilization Rate</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-blue-500">{kpis.utilizationRate}%</div>
+                        <div className="text-3xl font-bold text-blue-500">{stats.utilizationRate}%</div>
                     </CardContent>
                 </Card>
             </div>
@@ -106,18 +95,26 @@ export default function DashboardPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {activeTrips.map((trip) => (
-                                <TableRow key={trip.id}>
-                                    <TableCell className="font-medium text-primary">{trip.id}</TableCell>
-                                    <TableCell>{trip.vehicle}</TableCell>
-                                    <TableCell>{trip.driver}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Badge variant="outline" className="text-blue-500 border-blue-500/50 bg-blue-500/10">
-                                            {trip.status}
-                                        </Badge>
+                            {stats.activeTrips.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
+                                        No active trips found.
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                stats.activeTrips.map((trip: any) => (
+                                    <TableRow key={trip.id}>
+                                        <TableCell className="font-medium text-primary font-mono">{trip.id.slice(0, 8)}</TableCell>
+                                        <TableCell>{trip.vehicle.licensePlate}</TableCell>
+                                        <TableCell>{trip.driver.name}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Badge variant="outline" className="text-blue-500 border-blue-500/50 bg-blue-500/10">
+                                                {trip.status}
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
