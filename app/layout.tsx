@@ -21,7 +21,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${outfit.variable} font-sans antialiased min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20 selection:text-primary`}>
+      <body suppressHydrationWarning={true} className={`${outfit.variable} font-sans antialiased min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20 selection:text-primary`}>
         <main className="flex-1 flex flex-col">{children}</main>
         <Toaster richColors closeButton position="top-right" />
       </body>

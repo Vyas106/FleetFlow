@@ -2,6 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { getSession } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import {
     Bell,
     Search,
@@ -21,7 +22,8 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { logoutAction } from "@/lib/actions"
+import { logoutAction, getNotifications } from "@/lib/actions"
+import NotificationPopover from "@/components/dashboard/NotificationPopover"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const session = await getSession();
@@ -29,6 +31,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     if (!session) {
         redirect("/login");
     }
+
+    const notifications = await getNotifications(session.id);
 
     return (
         <SidebarProvider>
@@ -53,10 +57,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                             />
                         </div>
 
-                        <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-primary/10 hover:text-primary">
-                            <Bell className="h-5 w-5" />
-                            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive border-2 border-background" />
-                        </Button>
+                        <NotificationPopover initialNotifications={notifications} />
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -79,13 +80,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="py-2.5 cursor-pointer">
-                                    <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                                    <span>Profile</span>
+                                <DropdownMenuItem asChild className="py-2.5 cursor-pointer">
+                                    <Link href="/dashboard/profile" className="flex items-center w-full">
+                                        <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                                        <span>Profile</span>
+                                    </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="py-2.5 cursor-pointer">
-                                    <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
-                                    <span>Settings</span>
+                                <DropdownMenuItem asChild className="py-2.5 cursor-pointer">
+                                    <Link href="/dashboard/settings" className="flex items-center w-full">
+                                        <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
+                                        <span>Settings</span>
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <form action={logoutAction}>

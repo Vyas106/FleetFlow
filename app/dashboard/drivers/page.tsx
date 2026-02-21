@@ -64,6 +64,8 @@ export default async function DriversPage() {
                                 <TableHead className="w-[200px] pl-6 font-semibold uppercase text-xs tracking-wider">Operator Name</TableHead>
                                 <TableHead className="font-semibold uppercase text-xs tracking-wider">Credential ID / License No.</TableHead>
                                 <TableHead className="font-semibold uppercase text-xs tracking-wider">Certification Expiry</TableHead>
+                                <TableHead className="font-semibold uppercase text-xs tracking-wider">Completion %</TableHead>
+                                <TableHead className="font-semibold uppercase text-xs tracking-wider">Complaints</TableHead>
                                 <TableHead className="text-right pr-6 font-semibold uppercase text-xs tracking-wider">Duty Status</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -91,6 +93,12 @@ export default async function DriversPage() {
                                             <TableCell className="font-mono text-muted-foreground">{driver.licenseNumber}</TableCell>
                                             <TableCell className={isExpired ? "text-destructive font-bold" : "text-muted-foreground"}>
                                                 {format(new Date(driver.licenseExpiry), "dd/MM/yyyy")}
+                                            </TableCell>
+                                            <TableCell className="font-medium text-blue-500">
+                                                {driver.completionRate}%
+                                            </TableCell>
+                                            <TableCell className={`font-medium ${driver.complaints > 0 ? "text-amber-500" : "text-green-500"}`}>
+                                                {driver.complaints}
                                             </TableCell>
                                             <TableCell className="text-right pr-6">
                                                 <Badge variant="outline" className={`${isExpired ? "bg-destructive/10 text-destructive border-destructive/50" : getStatusVariant(driver.status)} uppercase tracking-widest text-[10px] font-bold px-3 py-1`}>

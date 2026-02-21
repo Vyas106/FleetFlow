@@ -3,8 +3,8 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { VehicleStatus, DriverStatus, TripStatus, ServiceStatus } from "@/lib/generated/client";
-import { setSession, logout } from "./auth";
+import { VehicleStatus, DriverStatus, TripStatus, ServiceStatus, NotificationType } from "@/lib/generated/client";
+import { setSession, logout, getSession } from "./auth";
 import bcrypt from "bcryptjs";
 
 // --- VEHICLE ACTIONS ---
@@ -44,6 +44,43 @@ export async function createVehicle(data: {
     }
 }
 
+export async function updateVehicle(id: string, data: {
+    name?: string;
+    model?: string;
+    type?: any;
+    licensePlate?: string;
+    maxLoadCapacity?: number;
+    odometer?: number;
+    status?: any;
+}) {
+    try {
+        const vehicle = await prisma.vehicle.update({
+            where: { id },
+            data,
+        });
+        revalidatePath("/dashboard/vehicles");
+        revalidatePath("/dashboard");
+        return { success: true, vehicle };
+    } catch (error) {
+        console.error("Failed to update vehicle:", error);
+        return { success: false, error: "Failed to update vehicle" };
+    }
+}
+
+export async function deleteVehicle(id: string) {
+    try {
+        await prisma.vehicle.delete({
+            where: { id },
+        });
+        revalidatePath("/dashboard/vehicles");
+        revalidatePath("/dashboard");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete vehicle:", error);
+        return { success: false, error: "Failed to delete vehicle. It may have associated trips or logs." };
+    }
+}
+
 // --- DRIVER ACTIONS ---
 
 export async function getDrivers() {
@@ -75,6 +112,43 @@ export async function createDriver(data: {
     } catch (error) {
         console.error("Failed to create driver:", error);
         return { success: false, error: "Failed to create driver" };
+    }
+}
+
+export async function updateDriver(id: string, data: {
+    name?: string;
+    licenseNumber?: string;
+    licenseExpiry?: Date;
+    status?: any;
+    safetyScore?: number;
+    completionRate?: number;
+    complaints?: number;
+}) {
+    try {
+        const driver = await prisma.driver.update({
+            where: { id },
+            data,
+        });
+        revalidatePath("/dashboard/drivers");
+        revalidatePath("/dashboard");
+        return { success: true, driver };
+    } catch (error) {
+        console.error("Failed to update driver:", error);
+        return { success: false, error: "Failed to update driver" };
+    }
+}
+
+export async function deleteDriver(id: string) {
+    try {
+        await prisma.driver.delete({
+            where: { id },
+        });
+        revalidatePath("/dashboard/drivers");
+        revalidatePath("/dashboard");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete driver:", error);
+        return { success: false, error: "Failed to delete driver. They may have associated trips or logs." };
     }
 }
 
@@ -130,6 +204,15 @@ export async function createTrip(data: {
 
             return trip;
         });
+
+        const session = await getSession();
+        if (session) {
+            await createNotification(session.id, {
+                title: "New Mission Dispatched",
+                message: `Mission ${result.id.slice(0, 8)} to ${data.destination} has been started.`,
+                type: NotificationType.SUCCESS,
+            });
+        }
 
         revalidatePath("/dashboard/dispatch");
         revalidatePath("/dashboard");
@@ -218,6 +301,15 @@ export async function createServiceLog(data: {
 
             return log;
         });
+
+        const session = await getSession();
+        if (session) {
+            await createNotification(session.id, {
+                title: "Vehicle Service Alert",
+                message: `Asset ID ${data.vehicleId.slice(0, 8)} has been moved to workshop for issues: ${data.issue}.`,
+                type: NotificationType.WARNING,
+            });
+        }
 
         revalidatePath("/dashboard/maintenance");
         revalidatePath("/dashboard/vehicles");
@@ -317,17 +409,17 @@ export async function getAnalyticsData() {
             prisma.trip.findMany({ where: { status: TripStatus.COMPLETED } }),
         ]);
 
-        const totalFuelCostNum = expenseLogs.reduce((acc: number, log: any) => acc + log.fuelCost, 0);
-        const totalMaintenanceCost = serviceLogs.reduce((acc: number, log: any) => acc + log.cost, 0);
+        const totalFuelCostNum = expenseLogs.reduce((acc: number, log: any) => acc + (log.fuelCost || 0), 0);
+        const totalMaintenanceCost = serviceLogs.reduce((acc: number, log: any) => acc + (log.cost || 0), 0);
         const totalRevenueNum = trips.reduce((acc: number, t: any) => acc + (t.revenue || 0), 0);
 
         // Group by month for Financial Summary
         const monthlyData: Record<string, { month: string; revenue: number; fuel: number; maintenance: number; profit: number }> = {};
 
         const allLogs = [
-            ...expenseLogs.map(l => ({ date: l.date, type: 'fuel', amount: l.fuelCost + l.miscExpense })),
-            ...serviceLogs.map(l => ({ date: l.date, type: 'maintenance', amount: l.cost })),
-            ...trips.map(t => ({ date: t.completedAt || t.createdAt, type: 'revenue', amount: t.revenue || 0 }))
+            ...expenseLogs.map((l: any) => ({ date: l.date, type: 'fuel', amount: l.fuelCost + l.miscExpense })),
+            ...serviceLogs.map((l: any) => ({ date: l.date, type: 'maintenance', amount: l.cost })),
+            ...trips.map((t: any) => ({ date: t.completedAt || t.createdAt, type: 'revenue', amount: t.revenue || 0 }))
         ];
 
         allLogs.forEach(entry => {
@@ -351,7 +443,7 @@ export async function getAnalyticsData() {
         })).sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
 
         // Fuel Efficiency Trend (Mocking some trend based on real liters/costs if available, but grouping by date)
-        const fuelTrend = expenseLogs.map(log => ({
+        const fuelTrend = expenseLogs.map((log: any) => ({
             date: new Date(log.date).toLocaleDateString(),
             efficiency: log.liters > 0 ? (100 / log.liters) : 0 // Simplified mock ratio
         })).slice(-10);
@@ -471,4 +563,52 @@ export async function signupAction(formData: FormData) {
 export async function logoutAction() {
     await logout();
     redirect("/login");
+}
+// --- NOTIFICATION ACTIONS ---
+
+export async function getNotifications(userId: string) {
+    try {
+        return await prisma.notification.findMany({
+            where: { userId },
+            orderBy: { createdAt: "desc" },
+            take: 20,
+        });
+    } catch (error) {
+        console.error("Failed to fetch notifications:", error);
+        return [];
+    }
+}
+
+export async function markNotificationAsRead(id: string) {
+    try {
+        await prisma.notification.update({
+            where: { id },
+            data: { isRead: true },
+        });
+        revalidatePath("/dashboard");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to mark notification as read:", error);
+        return { success: false };
+    }
+}
+
+export async function createNotification(userId: string, data: {
+    title: string;
+    message: string;
+    type: NotificationType;
+}) {
+    try {
+        const notification = await prisma.notification.create({
+            data: {
+                ...data,
+                userId,
+            },
+        });
+        revalidatePath("/dashboard");
+        return { success: true, notification };
+    } catch (error) {
+        console.error("Failed to create notification:", error);
+        return { success: false };
+    }
 }

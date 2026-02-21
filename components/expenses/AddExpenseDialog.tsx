@@ -24,7 +24,7 @@ export default function AddExpenseDialog({ vehicles, drivers, trips }: AddExpens
     async function handleSubmit(formData: FormData) {
         setLoading(true)
         const data = {
-            tripId: formData.get("tripId") as string || undefined,
+            tripId: formData.get("tripId") === "none" ? undefined : formData.get("tripId") as string,
             vehicleId: formData.get("vehicleId") as string,
             driverId: formData.get("driverId") as string,
             fuelCost: Number(formData.get("fuelCost")),
@@ -67,7 +67,7 @@ export default function AddExpenseDialog({ vehicles, drivers, trips }: AddExpens
                                     <SelectValue placeholder="Select trip" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">General (No specific trip)</SelectItem>
+                                    <SelectItem value="none">General (No specific trip)</SelectItem>
                                     {trips.map(t => (
                                         <SelectItem key={t.id} value={t.id}>
                                             Trip {t.id.slice(0, 8)} - {t.destination}

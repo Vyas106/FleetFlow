@@ -22,5 +22,3 @@ const prisma = (globalThis as any).prismaGlobal ?? prismaClientSingleton()
 export default prisma
 
 if (process.env.NODE_ENV !== 'production') (globalThis as any).prismaGlobal = prisma
-
-

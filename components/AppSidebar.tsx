@@ -86,7 +86,7 @@ export function AppSidebar({ userRole }: { userRole?: string }) {
                     <SidebarMenu className="gap-1">
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild className="h-11 px-3 rounded-lg hover:bg-accent/50 transition-all">
-                                <Link href="#">
+                                <Link href="/dashboard/settings">
                                     <Settings className="h-5 w-5 text-muted-foreground" />
                                     <span>Settings</span>
                                 </Link>
@@ -94,7 +94,7 @@ export function AppSidebar({ userRole }: { userRole?: string }) {
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild className="h-11 px-3 rounded-lg hover:bg-accent/50 transition-all">
-                                <Link href="#">
+                                <Link href="/dashboard/help">
                                     <HelpCircle className="h-5 w-5 text-muted-foreground" />
                                     <span>Help Center</span>
                                 </Link>

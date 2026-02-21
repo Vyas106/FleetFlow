@@ -49,6 +49,13 @@ enum ServiceStatus {
   RESOLVED
 }
 
+enum NotificationType {
+  INFO
+  WARNING
+  CRITICAL
+  SUCCESS
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -57,6 +64,20 @@ model User {
   role         Role     @default(MANAGER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  notifications Notification[]
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Vehicle {
