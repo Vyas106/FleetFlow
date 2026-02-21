@@ -37,8 +37,8 @@ export function middleware(request: NextRequest) {
         }
     }
 
-    // 3. Prevent logged in users from seeing login/register pages
-    if (pathname === "/login" || pathname === "/register") {
+    // 3. Prevent logged in users from seeing landing page, login or register pages
+    if (pathname === "/" || pathname === "/login" || pathname === "/register") {
         const sessionCookie = request.cookies.get(SESSION_COOKIE);
         if (sessionCookie) {
             return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -49,5 +49,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/dashboard/:path*', '/login', '/register'],
+    matcher: ['/', '/dashboard/:path*', '/login', '/register'],
 }
+

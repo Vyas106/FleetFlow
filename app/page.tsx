@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 import {
   Truck, Shield, Zap, BarChart3, ArrowRight, CheckCircle2,
@@ -7,8 +5,15 @@ import {
   Database, Fingerprint, Activity, Gauge, FileText, Settings, Code2, Cpu
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getSession } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await getSession()
+  if (session) {
+    redirect("/dashboard")
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-black text-slate-50 selection:bg-emerald-500/30">
       {/* Navigation */}
