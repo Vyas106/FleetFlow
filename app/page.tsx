@@ -40,7 +40,7 @@ export default async function LandingPage() {
               Sign In
             </Link>
             <Button asChild className="bg-emerald-500 hover:bg-emerald-600 text-black font-black px-6 rounded-full shadow-lg shadow-emerald-500/20">
-              <Link href="/register">Initialize Fleet</Link>
+              <Link href="/register">Get Started</Link>
             </Button>
           </div>
         </div>
