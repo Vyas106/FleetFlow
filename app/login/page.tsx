@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
     Truck, ArrowRight, ShieldCheck,
     Mail, Lock, Loader2, Activity, BarChart3, Globe
@@ -14,6 +15,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
 export default function LoginPage() {
+    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -26,6 +28,9 @@ export default function LoginPage() {
             if (result?.error) {
                 toast.error(result.error)
                 setIsLoading(false)
+            } else if (result?.success) {
+                router.push("/dashboard")
+                // We keep isLoading true to avoid flicker before redirect
             }
         } catch (error) {
             toast.error("An unexpected error occurred.")

@@ -515,7 +515,7 @@ export async function loginAction(formData: FormData) {
         role: user.role,
     });
 
-    redirect("/dashboard");
+    return { success: true };
 }
 
 export async function signupAction(formData: FormData) {
@@ -552,12 +552,12 @@ export async function signupAction(formData: FormData) {
         });
 
         revalidatePath("/");
+        return { success: true };
     } catch (error: any) {
         console.error("Signup failed:", error);
         const errorMessage = error?.message || "Unknown error";
         return { error: `Registration failed: ${errorMessage}` };
     }
-    redirect("/dashboard");
 }
 
 export async function logoutAction() {

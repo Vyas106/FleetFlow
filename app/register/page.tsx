@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
     Truck, UserPlus, ArrowRight, Briefcase,
     CheckCircle2, ShieldCheck, Globe, Loader2,
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function RegisterPage() {
+    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [role, setRole] = useState<string>("MANAGER")
 
@@ -31,6 +33,9 @@ export default function RegisterPage() {
             if (result?.error) {
                 toast.error(result.error)
                 setIsLoading(false)
+            } else if (result?.success) {
+                router.push("/dashboard")
+                // Keep loading true for smooth redirect
             }
         } catch (error) {
             toast.error("Registration failed. Please try again.")
