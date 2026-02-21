@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Filter } from "lucide-react"
 import { getTrips, getVehicles, getDrivers } from "@/lib/actions"
 import NewTripForm from "@/components/dispatch/NewTripForm"
-import { VehicleStatus, DriverStatus } from "@prisma/client"
+import CompleteTripDialog from "@/components/dispatch/CompleteTripDialog"
+import { VehicleStatus, DriverStatus, TripStatus } from "@/lib/generated/client"
 
 export default async function DispatchPage() {
     const [trips, allVehicles, allDrivers] = await Promise.all([
@@ -16,8 +17,8 @@ export default async function DispatchPage() {
         getDrivers(),
     ]);
 
-    const availableVehicles = allVehicles.filter(v => v.status === VehicleStatus.AVAILABLE);
-    const availableDrivers = allDrivers.filter(d => d.status === DriverStatus.ON_DUTY);
+    const availableVehicles = allVehicles.filter((v: any) => v.status === VehicleStatus.AVAILABLE);
+    const availableDrivers = allDrivers.filter((d: any) => d.status === DriverStatus.ON_DUTY);
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -77,13 +78,19 @@ export default async function DispatchPage() {
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    trips.map((t) => (
+                                    trips.map((t: any) => (
                                         <TableRow key={t.id}>
                                             <TableCell className="font-medium text-primary font-mono">{t.id.slice(0, 8)}</TableCell>
                                             <TableCell>{t.vehicle.licensePlate}</TableCell>
                                             <TableCell>{t.origin}</TableCell>
                                             <TableCell>{t.destination}</TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-right flex justify-end gap-2">
+                                                {t.status === TripStatus.DISPATCHED && (
+                                                    <CompleteTripDialog
+                                                        tripId={t.id}
+                                                        currentOdometer={t.vehicle.odometer}
+                                                    />
+                                                )}
                                                 <Badge variant="outline" className={getStatusColor(t.status)}>
                                                     {t.status}
                                                 </Badge>

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react"
 import { createServiceLog } from "@/lib/actions"
 import { toast } from "sonner"
-import { Vehicle } from "@prisma/client"
+import { Vehicle } from "@/lib/generated/client"
 
 interface AddServiceLogDialogProps {
     vehicles: Vehicle[];

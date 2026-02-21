@@ -67,7 +67,7 @@ export default async function ExpensesPage() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                expenseLogs.map((log) => (
+                                expenseLogs.map((log: any) => (
                                     <TableRow key={log.id}>
                                         <TableCell className="font-medium text-primary font-mono">
                                             {log.tripId ? log.tripId.slice(0, 8) : "N/A"}

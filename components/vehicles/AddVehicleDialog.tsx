@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react"
 import { createVehicle } from "@/lib/actions"
 import { toast } from "sonner"
-import { VehicleType } from "@prisma/client"
+import { VehicleType } from "@/lib/generated/client"
 
 export default function AddVehicleDialog() {
     const [open, setOpen] = useState(false)

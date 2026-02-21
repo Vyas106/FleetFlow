@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createTrip } from "@/lib/actions"
 import { toast } from "sonner"
-import { Vehicle, Driver } from "@prisma/client"
+import { Vehicle, Driver } from "@/lib/generated/client"
 
 interface NewTripFormProps {
     availableVehicles: Vehicle[];
@@ -38,6 +38,7 @@ export default function NewTripForm({ availableVehicles, availableDrivers }: New
             destination: formData.get("destination") as string,
             cargoWeight,
             estFuelCost: Number(formData.get("estFuelCost")),
+            revenue: Number(formData.get("revenue")),
         }
 
         const result = await createTrip(data)
@@ -117,11 +118,20 @@ export default function NewTripForm({ availableVehicles, availableDrivers }: New
                         <Input id="destination" name="destination" placeholder="Dropoff location" required />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="fuel">Estimated Fuel Cost</Label>
-                        <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
-                            <Input id="fuel" name="estFuelCost" type="number" className="pl-8" placeholder="0.00" required />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="fuel">Est. Fuel Cost</Label>
+                            <div className="relative">
+                                <span className="absolute left-3 top-2.5 text-muted-foreground">₹</span>
+                                <Input id="fuel" name="estFuelCost" type="number" className="pl-6" placeholder="0" required />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="revenue">Est. Revenue</Label>
+                            <div className="relative">
+                                <span className="absolute left-3 top-2.5 text-muted-foreground">₹</span>
+                                <Input id="revenue" name="revenue" type="number" className="pl-6" placeholder="0" required />
+                            </div>
                         </div>
                     </div>
                 </CardContent>

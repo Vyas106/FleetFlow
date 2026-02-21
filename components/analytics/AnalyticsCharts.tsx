@@ -11,20 +11,20 @@ interface AnalyticsChartsProps {
 export default function AnalyticsCharts({ fuelEfficiencyTrend, topCostliestVehicles }: AnalyticsChartsProps) {
     // Use mock data if provided data is empty to keep the UI looking good until real data accumulates
     const displayFuelTrend = fuelEfficiencyTrend.length > 0 ? fuelEfficiencyTrend : [
-        { month: "Jan", kml: 12 },
-        { month: "Feb", kml: 11 },
-        { month: "Mar", kml: 14 },
-        { month: "Apr", kml: 13 },
-        { month: "May", kml: 15 },
-        { month: "Jun", kml: 16 },
+        { date: "Jan", efficiency: 12 },
+        { date: "Feb", efficiency: 11 },
+        { date: "Mar", efficiency: 14 },
+        { date: "Apr", efficiency: 13 },
+        { date: "May", efficiency: 15 },
+        { date: "Jun", efficiency: 16 },
     ];
 
     const displayCostliest = topCostliestVehicles.length > 0 ? topCostliestVehicles : [
-        { vehicle: "VAN-02", cost: 120 },
-        { vehicle: "TRK-01", cost: 95 },
-        { vehicle: "TRK-05", cost: 85 },
-        { vehicle: "VAN-01", cost: 60 },
-        { vehicle: "MIN-04", cost: 45 },
+        { name: "VAN-02", cost: 120 },
+        { name: "TRK-01", cost: 95 },
+        { name: "TRK-05", cost: 85 },
+        { name: "VAN-01", cost: 60 },
+        { name: "MIN-04", cost: 45 },
     ];
 
     return (
@@ -38,14 +38,14 @@ export default function AnalyticsCharts({ fuelEfficiencyTrend, topCostliestVehic
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={displayFuelTrend}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888" opacity={0.2} />
-                            <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                            <XAxis dataKey="date" tickLine={false} axisLine={false} />
                             <YAxis tickLine={false} axisLine={false} />
                             <Tooltip
                                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
                             />
                             <Line
                                 type="monotone"
-                                dataKey="kml"
+                                dataKey="efficiency"
                                 stroke="#3b82f6"
                                 strokeWidth={3}
                                 dot={{ r: 4, fill: "#3b82f6", strokeWidth: 2, stroke: "var(--background)" }}
@@ -66,7 +66,7 @@ export default function AnalyticsCharts({ fuelEfficiencyTrend, topCostliestVehic
                         <BarChart data={displayCostliest} layout="vertical" margin={{ left: 20 }}>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#888" opacity={0.2} />
                             <XAxis type="number" tickLine={false} axisLine={false} />
-                            <YAxis dataKey="vehicle" type="category" tickLine={false} axisLine={false} width={80} />
+                            <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={80} />
                             <Tooltip
                                 cursor={{ fill: "transparent" }}
                                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}

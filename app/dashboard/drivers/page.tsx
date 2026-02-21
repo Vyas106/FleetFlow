@@ -71,7 +71,7 @@ export default async function DriversPage() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                drivers.map((driver) => {
+                                drivers.map((driver: any) => {
                                     const isExpired = isBefore(new Date(driver.licenseExpiry), today);
                                     return (
                                         <TableRow key={driver.id} className={isExpired ? "bg-red-500/5" : ""}>

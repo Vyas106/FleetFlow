@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react"
 import { createExpenseLog } from "@/lib/actions"
 import { toast } from "sonner"
-import { Vehicle, Driver, Trip } from "@prisma/client"
+import { Vehicle, Driver, Trip } from "@/lib/generated/client"
 
 interface AddExpenseDialogProps {
     vehicles: Vehicle[];

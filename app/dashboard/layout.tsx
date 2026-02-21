@@ -1,10 +1,19 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
+import { getSession } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+    const session = await getSession();
+
+    // Fallback if session is somehow missing despite middleware
+    if (!session) {
+        redirect("/login");
+    }
+
     return (
         <SidebarProvider>
-            <AppSidebar />
+            <AppSidebar userRole={session.role} />
             <div className="flex-1 flex flex-col w-full h-full overflow-hidden">
                 <header className="flex h-12 items-center gap-2 border-b bg-background px-4">
                     <SidebarTrigger />

@@ -75,7 +75,7 @@ export default async function MaintenancePage() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                serviceLogs.map((log) => (
+                                serviceLogs.map((log: any) => (
                                     <TableRow key={log.id}>
                                         <TableCell className="font-medium text-primary font-mono">{log.id.slice(0, 8)}</TableCell>
                                         <TableCell className="font-bold">{log.vehicle.licensePlate}</TableCell>
