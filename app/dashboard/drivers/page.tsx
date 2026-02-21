@@ -1,10 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, AlertTriangle } from "lucide-react"
+import { Search, Filter, AlertTriangle, Users, AlertCircle } from "lucide-react"
 import { getDrivers } from "@/lib/actions"
 import AddDriverDialog from "@/components/drivers/AddDriverDialog"
 import { format, isBefore } from "date-fns"
@@ -12,36 +12,36 @@ import { format, isBefore } from "date-fns"
 export default async function DriversPage() {
     const drivers = await getDrivers();
 
-    const getStatusColor = (status: string) => {
+    const getStatusVariant = (status: string) => {
         switch (status) {
             case "ON_DUTY": return "bg-green-500/10 text-green-500 border-green-500/50"
             case "OFF_DUTY": return "bg-amber-500/10 text-amber-500 border-amber-500/50"
-            case "SUSPENDED": return "bg-red-500/10 text-red-500 border-red-500/50"
-            default: return "bg-gray-500/10 text-gray-500 border-gray-500/50"
+            case "SUSPENDED": return "bg-destructive/10 text-destructive border-destructive/50"
+            default: return "bg-zinc-500/10 text-zinc-500 border-zinc-500/50"
         }
     }
 
     const today = new Date();
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
+        <div className="flex flex-col gap-8 animate-slow-fade">
+            <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center p-4 rounded-2xl bg-background/40 backdrop-blur-sm border border-border/40 shadow-sm">
                 <div className="flex flex-1 w-full sm:w-auto items-center gap-2">
                     <div className="relative flex-1 sm:max-w-xs">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input type="search" placeholder="Search drivers..." className="pl-8 w-full" />
+                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input type="search" placeholder="Search operational profiles..." className="pl-9 w-full bg-background border-border/50 rounded-full" />
                     </div>
                     <Select>
-                        <SelectTrigger className="w-[120px] hidden sm:flex">
-                            <SelectValue placeholder="Status" />
+                        <SelectTrigger className="w-[140px] hidden sm:flex rounded-full bg-background border-border/50">
+                            <SelectValue placeholder="Duty Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="expired">Expired</SelectItem>
-                            <SelectItem value="suspended">Suspended</SelectItem>
+                            <SelectItem value="active">Active Duty</SelectItem>
+                            <SelectItem value="expired">License Expired</SelectItem>
+                            <SelectItem value="suspended">Suspended Line</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="icon" className="shrink-0">
+                    <Button variant="outline" size="icon" className="shrink-0 rounded-full border-border/50 bg-background hover:bg-muted/50">
                         <Filter className="h-4 w-4" />
                     </Button>
                 </div>
@@ -49,43 +49,52 @@ export default async function DriversPage() {
                 <AddDriverDialog />
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Driver Performance & Safety Profiles</CardTitle>
+            <Card className="glass-card border-border/40 shadow-sm overflow-hidden flex-1 flex flex-col">
+                <CardHeader className="border-b border-border/40 bg-muted/20 pb-4">
+                    <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5 text-primary" />
+                        Driver Performance & Safety Profiles
+                    </CardTitle>
+                    <CardDescription>Oversight of operational personnel, certification validities, and duty statuses.</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 flex-1">
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead>Name</TableHead>
-                                <TableHead>License#</TableHead>
-                                <TableHead>Expiry</TableHead>
-                                <TableHead className="text-right">Status</TableHead>
+                            <TableRow className="hover:bg-transparent border-b-border/40">
+                                <TableHead className="w-[200px] pl-6 font-semibold uppercase text-xs tracking-wider">Operator Name</TableHead>
+                                <TableHead className="font-semibold uppercase text-xs tracking-wider">Credential ID / License No.</TableHead>
+                                <TableHead className="font-semibold uppercase text-xs tracking-wider">Certification Expiry</TableHead>
+                                <TableHead className="text-right pr-6 font-semibold uppercase text-xs tracking-wider">Duty Status</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {drivers.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
-                                        No drivers found.
+                                <TableRow className="hover:bg-transparent">
+                                    <TableCell colSpan={4} className="h-64 text-center">
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground gap-3">
+                                            <div className="p-4 bg-muted/30 rounded-full">
+                                                <AlertCircle className="h-8 w-8 opacity-40" />
+                                            </div>
+                                            <p>No operator profiles registered in the system.</p>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 drivers.map((driver: any) => {
                                     const isExpired = isBefore(new Date(driver.licenseExpiry), today);
                                     return (
-                                        <TableRow key={driver.id} className={isExpired ? "bg-red-500/5" : ""}>
-                                            <TableCell className="font-bold flex items-center gap-2">
-                                                {isExpired && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                                        <TableRow key={driver.id} className={`hover:bg-primary/5 transition-colors group border-b-border/40 ${isExpired ? "bg-destructive/5" : ""}`}>
+                                            <TableCell className="pl-6 py-4 font-bold text-base tracking-tight flex items-center gap-2">
+                                                {isExpired && <AlertTriangle className="h-4 w-4 text-destructive animate-pulse" />}
                                                 {driver.name}
                                             </TableCell>
-                                            <TableCell>{driver.licenseNumber}</TableCell>
-                                            <TableCell className={isExpired ? "text-red-500 font-medium" : ""}>
+                                            <TableCell className="font-mono text-muted-foreground">{driver.licenseNumber}</TableCell>
+                                            <TableCell className={isExpired ? "text-destructive font-bold" : "text-muted-foreground"}>
                                                 {format(new Date(driver.licenseExpiry), "dd/MM/yyyy")}
                                             </TableCell>
-                                            <TableCell className="text-right">
-                                                <Badge variant="outline" className={isExpired ? "bg-red-500/10 text-red-500 border-red-500/50" : getStatusColor(driver.status)}>
-                                                    {isExpired ? "EXPIRED" : driver.status}
+                                            <TableCell className="text-right pr-6">
+                                                <Badge variant="outline" className={`${isExpired ? "bg-destructive/10 text-destructive border-destructive/50" : getStatusVariant(driver.status)} uppercase tracking-widest text-[10px] font-bold px-3 py-1`}>
+                                                    {isExpired ? "EXPIRED" : driver.status.replace(/_/g, " ")}
                                                 </Badge>
                                             </TableCell>
                                         </TableRow>
