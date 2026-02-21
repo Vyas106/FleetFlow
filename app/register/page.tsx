@@ -1,15 +1,20 @@
 "use client"
 
+import { useState } from "react"
+import Link from "next/link"
+import {
+    Truck, UserPlus, ArrowRight, Briefcase,
+    CheckCircle2, ShieldCheck, Globe, Loader2,
+    User, Mail, Lock
+} from "lucide-react"
+import { signupAction } from "@/lib/actions"
+import { toast } from "sonner"
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
-import { Truck, UserPlus, ArrowRight, Briefcase } from "lucide-react"
-import { signupAction } from "@/lib/actions"
-import { useState } from "react"
-import { toast } from "sonner"
 
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false)
@@ -34,92 +39,170 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden bg-background">
-            {/* Background Decorative Elements */}
-            <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
-
-            <div className="w-full max-w-xl animate-slow-fade">
-                <div className="flex flex-col items-center mb-8 space-y-2">
-                    <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20">
-                        <Truck className="h-10 w-10 text-primary" />
-                    </div>
-                    <h1 className="text-3xl font-bold tracking-tight">Join FleetFlow</h1>
-                    <p className="text-muted-foreground text-center px-4">Create your administrator account to start managing your fleet today.</p>
+        <div className="flex min-h-screen bg-black text-slate-50">
+            {/* LEFT SIDE: Brand & Objective Narrative */}
+            <div className="hidden lg:flex relative w-1/2 flex-col justify-between p-12 overflow-hidden border-r border-emerald-900/20 bg-zinc-950">
+                {/* Green Gradient Orbs */}
+                <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+                    <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-emerald-500/10 rounded-full blur-[120px]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-600/10 rounded-full blur-[100px]" />
                 </div>
 
-                <Card className="border-border/40 shadow-2xl shadow-primary/5 glass-card">
-                    <CardHeader className="space-y-1 pb-6">
-                        <div className="flex items-center gap-2 mb-1">
-                            <div className="h-1 w-8 bg-primary rounded-full" />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">New Account</span>
+                <div className="relative z-10">
+                    <Link href="/" className="flex items-center gap-3 mb-12 group w-fit cursor-pointer">
+                        {/* Icon with hover rotation & emerald glow */}
+                        <div className="p-2 bg-emerald-500 rounded-lg shadow-lg shadow-emerald-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                            <Truck className="h-8 w-8 text-black" />
                         </div>
-                        <CardTitle className="text-2xl font-bold">Register Business</CardTitle>
-                        <CardDescription>
-                            Fill in your details to set up your organization
-                        </CardDescription>
-                    </CardHeader>
-                    <form onSubmit={handleSubmit}>
-                        <CardContent className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Full Name</Label>
-                                    <Input id="name" name="name" placeholder="John Doe" className="bg-background/50 border-border/60" required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Work Email</Label>
-                                    <Input id="email" name="email" type="email" placeholder="john@company.com" className="bg-background/50 border-border/60" required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Security Password</Label>
-                                    <Input id="password" name="password" type="password" placeholder="••••••••" className="bg-background/50 border-border/60" required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="role" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Operational Role</Label>
-                                    <Select value={role} onValueChange={setRole}>
-                                        <SelectTrigger id="role" className="bg-background/50 border-border/60">
-                                            <SelectValue placeholder="Select a role" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="MANAGER">Fleet Manager</SelectItem>
-                                            <SelectItem value="DISPATCHER">Logistics Dispatcher</SelectItem>
-                                            <SelectItem value="SAFETY_OFFICER">Safety Officer</SelectItem>
-                                            <SelectItem value="FINANCIAL_ANALYST">Financial Analyst</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
 
-                            <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 flex items-start gap-3">
-                                <Briefcase className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                                <p className="text-xs text-muted-foreground leading-relaxed">
-                                    By creating an account, you agree to our <Link href="#" className="text-primary hover:underline font-medium">Terms of Service</Link> and <Link href="#" className="text-primary hover:underline font-medium">Privacy Policy</Link>.
-                                </p>
-                            </div>
-                        </CardContent>
-                        <CardFooter className="flex flex-col space-y-4 pt-2">
-                            <Button className="w-full group relative overflow-hidden font-bold h-11" type="submit" disabled={isLoading}>
-                                <div className="absolute inset-0 bg-primary translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
-                                <span className="relative flex items-center justify-center gap-2">
-                                    {isLoading ? "Creating Account..." : (
-                                        <>
-                                            Complete Registration <UserPlus className="h-4 w-4" />
-                                        </>
-                                    )}
-                                </span>
-                            </Button>
-                        </CardFooter>
-                    </form>
-                </Card>
-
-                <p className="text-center text-sm text-muted-foreground mt-8">
-                    Already part of a fleet?{" "}
-                    <Link href="/login" className="font-semibold text-primary hover:underline transition-all">
-                        Log in to dashboard
+                        {/* Text Logo: Fleet (White) Flow (Green) */}
+                        <span className="text-2xl font-black tracking-tighter uppercase italic transition-all duration-300">
+                            <span className="text-white group-hover:text-emerald-50">Fleet</span>
+                            <span className="text-emerald-500 group-hover:text-emerald-400">Flow</span>
+                        </span>
                     </Link>
-                </p>
+
+                    <div className="space-y-6 max-w-xl">
+                        <h1 className="text-5xl font-extrabold leading-tight tracking-tight">
+                            Modular Fleet & <br />
+                            <span className="text-emerald-500">Logistics Management.</span>
+                        </h1>
+                        <p className="text-lg text-zinc-400 leading-relaxed italic border-l-2 border-emerald-500/50 pl-4">
+                            Replace inefficient, manual logbooks with a centralized, rule-based digital hub that optimizes the lifecycle of your delivery fleet.
+                        </p>
+                    </div>
+
+                    <div className="mt-12 grid grid-cols-1 gap-6">
+                        {[
+                            { title: "Safety Monitoring", desc: "Monitor driver behavior and ensure full compliance." },
+                            { title: "Financial Tracking", desc: "Real-time visibility into maintenance and performance." },
+                            { title: "Rule-Based Logic", desc: "Replace manual logs with automated digital workflows." }
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-start gap-3 group">
+                                <div className="p-1 rounded bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-black transition-colors">
+                                    <CheckCircle2 className="h-5 w-5 shrink-0" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-zinc-200">{item.title}</h4>
+                                    <p className="text-sm text-zinc-500">{item.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="relative z-10 flex items-center gap-6 text-zinc-600 text-xs font-bold uppercase tracking-widest">
+                    <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-4 w-4" /> Secure Data
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Globe className="h-4 w-4" /> Global Node
+                    </div>
+                </div>
+            </div>
+
+            {/* RIGHT SIDE: Register Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-black">
+                <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-right-4 duration-700">
+                    <div className="space-y-2">
+                        <h2 className="text-3xl font-bold tracking-tight text-white">Create Administrator Account</h2>
+                        <p className="text-zinc-500">Start managing your organization today.</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="grid gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name" className="text-xs font-bold uppercase text-zinc-500 ml-1">Full Name</Label>
+                                <div className="relative group">
+                                    <User className="absolute left-3 top-3 h-4 w-4 text-zinc-700 group-focus-within:text-emerald-500 transition-colors" />
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        placeholder="John Doe"
+                                        className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-emerald-500 h-11 transition-all"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="email" className="text-xs font-bold uppercase text-zinc-500 ml-1">Work Email</Label>
+                                <div className="relative group">
+                                    <Mail className="absolute left-3 top-3 h-4 w-4 text-zinc-700 group-focus-within:text-emerald-500 transition-colors" />
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="john@company.com"
+                                        className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-emerald-500 h-11 transition-all"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="password" title="Minimum 8 characters" className="text-xs font-bold uppercase text-zinc-500 ml-1">Security Password</Label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-3 top-3 h-4 w-4 text-zinc-700 group-focus-within:text-emerald-500 transition-colors" />
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        placeholder="••••••••"
+                                        className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-emerald-500 h-11 transition-all"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="role" className="text-xs font-bold uppercase text-zinc-500 ml-1">Operational Role</Label>
+                                <Select value={role} onValueChange={setRole}>
+                                    <SelectTrigger id="role" className="bg-zinc-900/50 border-zinc-800 text-zinc-300 h-11">
+                                        <div className="flex items-center gap-2">
+                                            <Briefcase className="h-4 w-4 text-zinc-700" />
+                                            <SelectValue placeholder="Select a role" />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-200">
+                                        <SelectItem value="MANAGER">Fleet Manager</SelectItem>
+                                        <SelectItem value="DISPATCHER">Logistics Dispatcher</SelectItem>
+                                        <SelectItem value="SAFETY_OFFICER">Safety Officer</SelectItem>
+                                        <SelectItem value="FINANCIAL_ANALYST">Financial Analyst</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                            <p className="text-[11px] text-zinc-500 text-center leading-relaxed">
+                                By registering, you agree to our <Link href="#" className="text-emerald-500 font-bold hover:underline">Terms of Service</Link> and <Link href="#" className="text-emerald-500 font-bold hover:underline">Privacy Policy</Link>.
+                            </p>
+                        </div>
+
+                        <Button
+                            className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-black h-12 transition-all active:scale-[0.98] shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)]"
+                            type="submit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                                <span className="flex items-center gap-2">
+                                    Complete Registration <ArrowRight className="h-4 w-4" />
+                                </span>
+                            )}
+                        </Button>
+                    </form>
+
+                    <p className="text-center text-sm text-zinc-500">
+                        Already have an account?{" "}
+                        <Link href="/login" className="font-bold text-emerald-500 hover:text-emerald-400 transition-colors">
+                            Sign in to dashboard
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     )
 }
-

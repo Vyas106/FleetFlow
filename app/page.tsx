@@ -1,253 +1,234 @@
+"use client"
+
 import Link from "next/link"
-import { Truck, Shield, Zap, BarChart3, ArrowRight, CheckCircle2, Globe, Clock, Package } from "lucide-react"
+import {
+  Truck, Shield, Zap, BarChart3, ArrowRight, CheckCircle2,
+  Globe, Clock, Package, AlertCircle, TrendingUp, Users,
+  Database, Fingerprint, Activity, Gauge, FileText, Settings, Code2, Cpu
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { getSession } from "@/lib/auth"
-import { redirect } from "next/navigation"
 
-export default async function LandingPage() {
-  const session = await getSession();
-
-  if (session) {
-    redirect("/dashboard");
-  }
-
+export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background selection:bg-primary/20">
+    <div className="flex flex-col min-h-screen bg-black text-slate-50 selection:bg-emerald-500/30">
       {/* Navigation */}
-      <header className="fixed top-0 w-full z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+      <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl">
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="bg-primary p-2 rounded-xl group-hover:scale-110 transition-transform">
-              <Truck className="h-6 w-6 text-primary-foreground" />
+            <div className="bg-emerald-500 p-2 rounded-lg group-hover:rotate-6 transition-transform">
+              <Truck className="h-5 w-5 text-black" />
             </div>
-            <span className="text-2xl font-black tracking-tighter">
-              Fleet<span className="text-primary">Flow</span>
+            <span className="text-xl font-black tracking-tighter uppercase italic">
+              Fleet<span className="text-emerald-500">Flow</span>
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-bold text-muted-foreground">
-            <Link href="#features" className="hover:text-primary transition-colors">Features</Link>
-            <Link href="#solutions" className="hover:text-primary transition-colors">Solutions</Link>
-            <Link href="#pricing" className="hover:text-primary transition-colors">Pricing</Link>
+          <nav className="hidden lg:flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+            <Link href="#solutions" className="hover:text-emerald-500 transition-colors">Target Roles</Link>
+            <Link href="#ecosystem" className="hover:text-emerald-500 transition-colors">Ecosystem</Link>
+            <Link href="#architecture" className="hover:text-emerald-500 transition-colors">Architecture</Link>
+            <Link href="#stack" className="hover:text-emerald-500 transition-colors">Tech Stack</Link>
           </nav>
 
           <div className="flex items-center gap-4">
-            {session ? (
-              <Button asChild rounded="full" className="font-bold px-6 shadow-lg shadow-primary/20">
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-            ) : (
-              <>
-                <Link href="/login" className="text-sm font-bold hover:text-primary transition-colors px-4 py-2">
-                  Login
-                </Link>
-                <Button asChild rounded="full" className="font-bold px-6 shadow-lg shadow-primary/20">
-                  <Link href="/register">Get Started</Link>
-                </Button>
-              </>
-            )}
+            <Link href="/login" className="text-xs font-bold hover:text-emerald-500 transition-colors px-4">
+              Sign In
+            </Link>
+            <Button asChild className="bg-emerald-500 hover:bg-emerald-600 text-black font-black px-6 rounded-full shadow-lg shadow-emerald-500/20">
+              <Link href="/register">Initialize Fleet</Link>
+            </Button>
           </div>
         </div>
       </header>
 
-      <main className="flex-grow pt-20">
-        {/* Hero Section */}
-        <section className="relative py-24 lg:py-32 overflow-hidden">
-          <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px] -z-10 -translate-x-1/2 translate-y-1/2" />
+      <main className="flex-grow">
+        {/* HERO SECTION */}
+        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden px-6">
+          {/* --- ADVANCED BACKGROUND ELEMENTS --- */}
 
-          <div className="container mx-auto px-4 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-8 animate-fade-in">
-              <Zap className="h-3 w-3" /> The Future of Logistics is Here
+          {/* 1. The Moving "Grid" Overlay - Gives a sense of structure and depth */}
+          <div className="absolute inset-0 z-[-2] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+
+          {/* 2. Primary Emerald Light Orb (Animated) */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-emerald-500/20 rounded-[100%] blur-[120px] animate-pulse z-[-1]" />
+
+          {/* 3. Drifting "Smoke/Light" Orbs */}
+          <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-600/10 rounded-full blur-[100px] animate-blob z-[-1]" />
+          <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-emerald-900/20 rounded-full blur-[100px] animate-blob animation-delay-2000 z-[-1]" />
+
+          {/* 4. Scanning Light Line (Subtle "Radar" sweep) */}
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent animate-scan z-[-1]" />
+
+          {/* --- CONTENT --- */}
+          <div className="container mx-auto text-center relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-10 animate-fade-in">
+              <Activity className="h-3 w-3 animate-pulse" /> System Version 3.0 Live
             </div>
-            <h1 className="text-5xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] animate-slow-fade">
-              Next-Generation <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">
-                Fleet Intelligence
+
+            <h1 className="text-6xl lg:text-8xl font-black tracking-tighter mb-8 leading-[0.85] uppercase italic animate-title">
+              Centralized <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-emerald-500/50">
+                Fleet Logic.
               </span>
             </h1>
-            <p className="max-w-2xl mx-auto text-muted-foreground text-lg lg:text-xl font-medium mb-12 leading-relaxed animate-slow-fade">
-              Optimize your entire logistics operation with real-time tracking, AI-powered dispatching, and automated maintenance logs. All in one premium platform.
+
+            <p className="max-w-2xl mx-auto text-zinc-400 text-lg font-medium mb-12 leading-relaxed animate-fade-in-delayed">
+              A rule-based digital hub replacing manual logbooks. Control the entire lifecycle of your
+              delivery fleet—from asset registration to real-time financial auditing.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-slow-fade">
-              <Button size="lg" asChild rounded="full" className="h-14 px-10 text-lg font-bold shadow-2xl shadow-primary/30 group">
-                <Link href={session ? "/dashboard" : "/register"}>
-                  Start Free Trial <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-delayed">
+              <Button size="lg" className="h-14 px-8 bg-white text-black hover:bg-emerald-500 hover:scale-105 transition-all duration-300 font-black uppercase tracking-wider group relative overflow-hidden">
+                <span className="relative z-10 flex items-center">
+                  Start Transformation <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+                {/* Button Shine Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               </Button>
-              <Button size="lg" variant="outline" rounded="full" className="h-14 px-10 text-lg font-bold border-border/40 hover:bg-muted/50">
-                <Link href="#features">Watch Demo</Link>
-              </Button>
-            </div>
 
-            {/* Social Proof */}
-            <div className="mt-24 pt-12 border-t border-border/40 animate-slow-fade">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground/50 mb-8">Trusted by Global Logistics Leaders</p>
-              <div className="flex flex-wrap justify-center gap-8 lg:gap-16 opacity-40 grayscale group hover:opacity-100 transition-all duration-700">
-                <div className="flex items-center gap-2 font-black text-xl">🚀 SPACEFORCE</div>
-                <div className="flex items-center gap-2 font-black text-xl">⚡ VOLTTRANS</div>
-                <div className="flex items-center gap-2 font-black text-xl">📦 LOGIXNET</div>
-                <div className="flex items-center gap-2 font-black text-xl">🌐 NEXUS</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Dashboard Preview Section */}
-        <section className="py-20 bg-muted/30 relative overflow-hidden">
-          <div className="container mx-auto px-4">
-            <div className="relative group max-w-6xl mx-auto">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-600/20 blur-3xl rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
-              <div className="glass-card rounded-[2.5rem] border border-border/40 overflow-hidden shadow-3xl">
-                <div className="h-12 border-b border-border/40 px-6 flex items-center gap-2 bg-background/50">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                    <div className="w-3 h-3 rounded-full bg-amber-500/50" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                  </div>
-                  <div className="mx-auto bg-muted/50 px-4 py-1 rounded-md text-[10px] font-medium text-muted-foreground">
-                    fleetflow.io/dashboard/analytics
-                  </div>
-                </div>
-                <div className="aspect-[16/10] bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-12 overflow-hidden">
-                  <div className="grid grid-cols-2 gap-8 w-full h-full max-h-[500px]">
-                    <div className="space-y-6">
-                      <div className="h-32 rounded-3xl bg-primary/10 border border-primary/20 animate-pulse" />
-                      <div className="h-48 rounded-3xl bg-muted/40 border border-border/40" />
-                    </div>
-                    <div className="space-y-6">
-                      <div className="h-48 rounded-3xl bg-muted/40 border border-border/40" />
-                      <div className="h-32 rounded-3xl bg-blue-500/10 border border-blue-500/20 animate-pulse" />
-                    </div>
-                  </div>
+              <div className="flex items-center gap-4 border-l border-zinc-800 pl-6 group">
+                <div className="text-left">
+                  <p className="text-[10px] font-black uppercase text-emerald-500 tracking-widest group-hover:tracking-[0.4em] transition-all">Global Ops</p>
+                  <p className="text-xs font-bold text-zinc-500 italic">24/7 Monitoring Enabled</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
-
-        {/* Features Section */}
-        <section id="features" className="py-24 lg:py-32">
-          <div className="container mx-auto px-4 text-center mb-20">
-            <h2 className="text-3xl lg:text-5xl font-black tracking-tight mb-4">Precision-Engineered Features</h2>
-            <p className="text-muted-foreground font-medium">Built to scale with your growing business, from 5 vehicles to 5,000.</p>
-          </div>
-
-          <div className="container mx-auto px-4 grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Zap,
-                title: "Smart Dispatching",
-                desc: "Automated trip assignment based on vehicle availability and driver safety scores.",
-                color: "primary"
-              },
-              {
-                icon: BarChart3,
-                title: "Power Analytics",
-                desc: "Live ROI tracking, fuel efficiency analysis and financial forecasting.",
-                color: "blue"
-              },
-              {
-                icon: Shield,
-                title: "Asset Security",
-                desc: "Comprehensive service logs and automated maintenance reminders for entire fleet.",
-                color: "green"
-              },
-              {
-                icon: Globe,
-                title: "Global Operations",
-                desc: "Track shipments across borders with multi-currency and timezone support.",
-                color: "amber"
-              },
-              {
-                icon: Clock,
-                title: "Real-time Sync",
-                desc: "Live status updates across mobile and desktop apps with sub-second latency.",
-                color: "purple"
-              },
-              {
-                icon: Package,
-                title: "Cargo Tracking",
-                desc: "Detailed cargo management including weight limits and delivery confirmation.",
-                color: "red"
-              }
-            ].map((feature, i) => (
-              <div key={i} className="glass-card p-10 rounded-3xl border border-border/40 hover:border-primary/40 transition-all duration-300 group">
-                <div className={`p-4 rounded-2xl bg-primary/10 w-fit mb-6 group-hover:scale-110 transition-transform duration-500`}>
-                  <feature.icon className="h-8 w-8 text-primary" />
+        {/* TARGET USER ROLES */}
+        <section id="solutions" className="py-24 border-y border-white/5 bg-zinc-950/50">
+          <div className="container mx-auto px-6">
+            <div className="mb-16">
+              <h2 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-500 mb-4">Target Personas</h2>
+              <h3 className="text-4xl font-black italic tracking-tighter uppercase">Role-Specific <br /> Interfaces.</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { user: "Fleet Managers", task: "Lifecycle Tracking", desc: "Oversee vehicle health, asset procurement, and preventative scheduling.", icon: Truck },
+                { user: "Dispatchers", task: "Smart Routing", desc: "Validate cargo loads against capacity and assign drivers via sub-second logic.", icon: Zap },
+                { user: "Safety Officers", task: "Compliance Guard", desc: "Enforce license validity and monitor real-time driver safety scores.", icon: Shield },
+                { user: "Financial Analysts", task: "ROI Auditing", desc: "Analyze fuel burn, maintenance spend, and total operational costs per asset.", icon: BarChart3 },
+              ].map((item, i) => (
+                <div key={i} className="bg-zinc-900/50 border border-white/5 p-8 rounded-2xl hover:border-emerald-500/50 transition-all group">
+                  <div className="bg-emerald-500/10 p-3 w-fit rounded-lg mb-6 group-hover:bg-emerald-500 transition-colors">
+                    <item.icon className="h-6 w-6 text-emerald-500 group-hover:text-black" />
+                  </div>
+                  <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-2">{item.user}</h4>
+                  <h3 className="text-xl font-bold mb-4">{item.task}</h3>
+                  <p className="text-sm text-zinc-500 leading-relaxed font-medium">{item.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed italic">{feature.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-24">
-          <div className="container mx-auto px-4">
-            <div className="bg-primary rounded-[3rem] p-12 lg:p-24 text-center text-primary-foreground relative overflow-hidden shadow-3xl shadow-primary/20">
-              <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-white/10 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2" />
-              <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[120px] -z-10 -translate-x-1/2 translate-y-1/2" />
+        {/* THE ECOSYSTEM: CORE MODULES */}
+        <section id="ecosystem" className="py-24">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl lg:text-5xl font-black tracking-tighter uppercase italic mb-4">The Modular Ecosystem</h2>
+              <p className="text-zinc-500 font-medium">8 integrated modules working in perfect sync.</p>
+            </div>
 
-              <h2 className="text-4xl lg:text-6xl font-black tracking-tight mb-8">Ready to revolutionize your logistics?</h2>
-              <p className="max-w-xl mx-auto text-primary-foreground/80 text-lg font-medium mb-12 italic">
-                Join thousands of fleet managers who have already optimized their operations with FleetFlow.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                <Button size="lg" variant="secondary" asChild rounded="full" className="h-16 px-12 text-xl font-black group">
-                  <Link href="/register">
-                    Get Started Now <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" rounded="full" className="h-16 px-12 text-xl font-black bg-white/10 border-white/20 hover:bg-white/20">
-                  Talk to Sales
-                </Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                { title: "Command Center", desc: "High-level KPIs: Active Fleet, Maintenance alerts, and Utilization Rates.", icon: Gauge },
+                { title: "Vehicle Registry", desc: "Complete asset management including load capacity (kg) and odometer logs.", icon: Database },
+                { title: "Trip Dispatcher", desc: "Workflow: Draft → Dispatched → Completed with CargoWeight validation rules.", icon: Package },
+                { title: "Service Logs", desc: "Automated status switching: Maintenance logs trigger 'In Shop' status across system.", icon: Settings },
+                { title: "Financial Tracker", desc: "Granular logging of Fuel, Liters, and Costs per Vehicle ID.", icon: TrendingUp },
+                { title: "Safety Profiles", desc: "License expiry blocking and trip completion performance metrics.", icon: Users },
+              ].map((module, i) => (
+                <div key={i} className="flex gap-6 p-6 rounded-2xl border border-white/5 hover:bg-zinc-900/30 transition-all">
+                  <module.icon className="h-8 w-8 text-emerald-500 shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">{module.title}</h3>
+                    <p className="text-sm text-zinc-500 leading-relaxed italic">{module.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* TECH STACK & ARCHITECTURE */}
+        <section id="architecture" className="py-24 bg-emerald-500 text-black">
+          <div className="container mx-auto px-6">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-5xl font-black tracking-tighter uppercase italic mb-8">Enterprise <br /> Architecture.</h2>
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <p className="font-black uppercase tracking-widest text-[10px]">Data Integrity</p>
+                    <p className="text-sm font-bold opacity-80 italic italic">Unique Plate IDs & RBAC Security.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-black uppercase tracking-widest text-[10px]">Processing</p>
+                    <p className="text-sm font-bold opacity-80 italic">Real-time Automated ROI Calculation.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-black uppercase tracking-widest text-[10px]">Reporting</p>
+                    <p className="text-sm font-bold opacity-80 italic">One-click CSV/PDF Health Audits.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-black uppercase tracking-widest text-[10px]">Validation</p>
+                    <p className="text-sm font-bold opacity-80 italic">Weight vs Capacity Logic Gates.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="stack" className="bg-black/10 p-10 rounded-[3rem] border border-black/10">
+                <h3 className="text-xs font-black uppercase tracking-[0.3em] mb-8">System Stack</h3>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Code2 className="h-5 w-5" />
+                    <span className="font-bold">Next.js 14 Framework (App Router)</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Database className="h-5 w-5" />
+                    <span className="font-bold">PostgreSQL for Relational Asset Data</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Fingerprint className="h-5 w-5" />
+                    <span className="font-bold">NextAuth.js for Role-Based Access</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Cpu className="h-5 w-5" />
+                    <span className="font-bold">Server Actions for Logic-Heavy Validation</span>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* FINAL CALL TO ACTION */}
+        <section className="py-32 text-center px-6">
+          <h2 className="text-4xl lg:text-7xl font-black tracking-tighter uppercase italic mb-8">
+            Ready to Optimize?
+          </h2>
+          <p className="text-zinc-500 max-w-xl mx-auto mb-12 font-medium">
+            Eliminate manual errors and take control of your logistics lifecycle today.
+          </p>
+          <div className="flex justify-center">
+            <Button size="lg" asChild className="h-16 px-12 bg-emerald-500 hover:bg-emerald-600 text-black font-black uppercase tracking-widest rounded-full shadow-2xl shadow-emerald-500/20">
+              <Link href="/register">Initialize System Access</Link>
+            </Button>
           </div>
         </section>
       </main>
 
-      <footer className="py-20 border-t border-border/40">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-12 mb-20 text-center md:text-left">
-            <div className="col-span-2">
-              <Link href="/" className="flex items-center gap-2 mb-6 justify-center md:justify-start">
-                <div className="bg-primary p-2 rounded-xl">
-                  <Truck className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <span className="text-2xl font-black tracking-tighter italic">FleetFlow</span>
-              </Link>
-              <p className="text-muted-foreground max-w-sm font-medium italic">
-                The leading enterprise operating system for modern fleet and logistics management. Trusted worldwide.
-              </p>
+      {/* FOOTER */}
+      <footer className="py-12 border-t border-white/5 text-[10px] font-bold text-zinc-600 uppercase tracking-[0.3em]">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="bg-zinc-800 p-1 rounded">
+              <Truck className="h-3 w-3" />
             </div>
-            <div>
-              <h4 className="font-black uppercase tracking-widest text-xs mb-6">Product</h4>
-              <div className="flex flex-col gap-4 text-sm text-muted-foreground font-medium">
-                <Link href="#" className="hover:text-primary transition-colors">Features</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Integrations</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Roadmap</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-black uppercase tracking-widest text-xs mb-6">Company</h4>
-              <div className="flex flex-col gap-4 text-sm text-muted-foreground font-medium">
-                <Link href="#" className="hover:text-primary transition-colors">About Us</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Careers</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Privacy</Link>
-              </div>
-            </div>
+            <span>© 2026 FleetFlow Intelligence Hub</span>
           </div>
-          <div className="flex flex-col md:flex-row items-center justify-between border-t border-border/40 pt-10 text-xs text-muted-foreground font-bold tracking-widest">
-            <p>© 2026 FLEETFLOW OPERATING SYSTEMS LLC.</p>
-            <div className="flex gap-8 mt-4 md:mt-0 italic">
-              <span>MADE FOR THE BOLD.</span>
-              <div className="flex items-center gap-2">
-                <Globe className="h-3 w-3" /> INDIA (IST)
-              </div>
-            </div>
+          <div className="flex gap-8 italic">
+            <span>Powered by Vercel</span>
+            <span>Made for Scale</span>
           </div>
         </div>
       </footer>
